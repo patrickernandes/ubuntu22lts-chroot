@@ -87,21 +87,27 @@ else
     fi
 fi
 
+
 echo
-set -- "debootstrap" "genfstab"
-for i in "$@"; do
-    if ! command -v "${i}"; then
-        echo "$RED Não encontrado o aplicativo '${i}'!$NOCOLOR"; echo
-        exit 1
-    fi
-done
-
-
 check_network(){
     if ! ping4 -q -c 1 -W 1 google.com > /dev/null; then
         echo "$RED Sem conexão com a internet!$NOCOLOR"; echo
         exit 1
+    else
+        apt update
+        apt -y install debootstrap arch-install-scripts
     fi
+}
+
+
+check_tools(){
+    set -- "debootstrap" "genfstab"
+    for i in "$@"; do
+        if ! command -v "${i}"; then
+            echo "$RED Não encontrado o aplicativo '${i}'!$NOCOLOR"; echo
+            exit 1
+        fi
+    done
 }
 
 
@@ -183,15 +189,13 @@ alias g='grep -v -E "^#|^$"'
 alias update='apt update'
 alias uplist='apt list --upgradeable'
 alias upgrade='apt upgrade'
+alias install='apt install'
+alias remove='apt remove'
+alias search='apt search'
 alias dd='dd status=progress'
 alias lv='lvs -a -o +devices'
 alias s='systemctl'
 alias d='docker'
-alias slog="grep -E 'SINO|LVM|REDE' /var/log/messages"
-alias srv='sino srv'
-alias net='sino net'
-alias fetch='sino fetch'
-alias vm='sino vm'
 EOF
 
     cat <<EOF > ${CHROOT_DIR}/etc/apt/apt.conf
@@ -380,6 +384,7 @@ install_finished(){
 test "$(id -u)" != 0 && { echo "$RED ERROR - execução somente como usuário 'root'!$NOCOLOR"; echo; exit 1; }
 
 check_network
+check_tools
 ubuntu_bootstrap
 chroot_mount
 chroot_ubuntu_install
