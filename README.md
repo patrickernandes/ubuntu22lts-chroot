@@ -17,7 +17,7 @@ A partição de instalação deve ser montada na pasta "/mnt".
 Agora, só executar:
 
 ```
-sh install | tee -a log.txt
+sh install | tee -a /mnt/log.txt
 ```
 
 O processo de instalação será iniciado e os logs armazenados no arquivo 'log.txt', que pode ser visualizado posteriormente.

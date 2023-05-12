@@ -241,6 +241,7 @@ EOF
     fi
 
     sed -i "s/quiet/quiet net.ifnames=0 ipv6.disable=1/g" ${CHROOT_DIR}/etc/default/grub
+    echo "GRUB_DISABLE_OS_PROBER=true" >> ${CHROOT_DIR}/etc/default/grub
     run update-grub
 
     run rm -f /etc/machine-id /var/lib/dbus/machine-id
@@ -249,6 +250,7 @@ EOF
     run ln -fs /etc/machine-id /var/lib/dbus/machine-id
 
     cat <<EOF >> ${CHROOT_DIR}/etc/modules
+dm_mod
 dm_cache
 bridge
 kvm
@@ -340,6 +342,13 @@ EOF
     echo "$YELLOW PASS - digitar a senha para o usuário '${SUDO_USER}'.$NOCOLOR"
     run passwd ${SUDO_USER}; echo
 
+#    run useradd -m -s /bin/bash -g users ${SUDO_USER}
+#    echo "$YELLOW PASS - digitar a senha para o usuário '${SUDO_USER}'.$NOCOLOR"
+#    run passwd ${SUDO_USER}; echo
+#
+#    run echo "${SUDO_USER} ALL=(root) NOPASSWD:ALL" | tee -a /etc/sudoers.d/${SUDO_USER}
+#    run chmod 0440 /etc/sudoers.d/${SUDO_USER}
+
     echo "$YELLOW PASS - digitar a senha para o usuário 'root'.$NOCOLOR"
     run passwd root; echo
     rm -f ${CHROOT_DIR}/root/.bash_history
@@ -364,7 +373,7 @@ chroot_umount(){
         umount ${CHROOT_DIR}/dev/pts
         umount ${CHROOT_DIR}/dev
         umount ${CHROOT_DIR}/proc
-        sleep 4
+        sleep 5
         umount ${CHROOT_DIR}
     fi
 }
