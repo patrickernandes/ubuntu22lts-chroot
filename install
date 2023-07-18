@@ -157,8 +157,10 @@ set tabstop=4
 set softtabstop=4
 set shiftwidth=4
 set expandtab
+set modeline
 
 colo desert
+set mouse=c
 EOF
 
     mkdir ${CHROOT_DIR}/root/.bin
@@ -230,7 +232,7 @@ EOF
 
     run apt -y install initramfs-tools linux-generic linux-image-generic 
     run apt -y install systemd systemd-sysv systemd-timesyncd libnss-systemd libpam-systemd init
-    run apt -y install dbus cron gettext-base debconf-i18n util-linux-locales man-db manpages-pt-br less irqbalance kbd htop dstat tmux tree ncdu rsync openssh-client openssh-server pciutils usbutils nano pv acpid netbase net-tools isc-dhcp-client iputils-ping iproute2 netcat-openbsd telnet parted gdisk fdisk lvm2 bc dmidecode bridge-utils lsof hdparm ntfs-3g dosfstools kpartx unzip iftop wget whois pigz smartmontools rsyslog logrotate psmisc nmon nethogs ifupdown sudo openssl traceroute zstd fuse3 uml-utilities curl ncurses-term iptables ebtables arptables ethtool xz-utils bzip2 ca-certificates smemstat software-properties-common
+    run apt -y install dbus cron gettext-base debconf-i18n util-linux-locales man-db manpages-pt-br less irqbalance kbd htop dstat tmux tree ncdu rsync openssh-client openssh-server pciutils usbutils nano pv acpid netbase net-tools isc-dhcp-client iputils-ping iproute2 netcat-openbsd telnet parted gdisk fdisk lvm2 bc dmidecode bridge-utils lsof hdparm ntfs-3g dosfstools kpartx unzip iftop wget whois pigz smartmontools rsyslog logrotate psmisc nmon nethogs ifupdown sudo openssl traceroute zstd fuse3 uml-utilities curl ncurses-term iptables ebtables arptables ethtool xz-utils bzip2 ca-certificates smemstat software-properties-common linux-tools-generic linux-tools-common
 
     if [ -d "/sys/firmware/efi" ]; then
         run apt -y install grub-efi-amd64 shim-signed shim-helpers-amd64-signed efibootmgr
@@ -251,7 +253,11 @@ EOF
 
     cat <<EOF >> ${CHROOT_DIR}/etc/modules
 dm_mod
+dm_snapshot
+dm_mirror
 dm_cache
+dm_cache_smq
+dm_thin_pool
 bridge
 kvm
 vhost_net
