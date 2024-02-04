@@ -340,7 +340,7 @@ EOF
     run chmod +x /etc/rc.local
 
     if [ -c /dev/kvm ]; then
-        sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT="[^"]*/& intel_iommu=on systemd.unified_cgroup_hierarchy=false systemd.legacy_systemd_cgroup_controller=false/g' ${CHROOT_DIR}/etc/default/grub
+        sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT="[^"]*/& net.ifnames=1 intel_iommu=on systemd.unified_cgroup_hierarchy=false systemd.legacy_systemd_cgroup_controller=false/g' ${CHROOT_DIR}/etc/default/grub
         run update-grub
     fi
 
